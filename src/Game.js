@@ -7,8 +7,20 @@ class Game extends React.Component {
         this.boardSize = 100;
         this.state = {
             cells: this.createInitialCells(),
-            generation: 0
+            generation: 0,
+            running: false
         };
+    }
+
+    componentDidMount() {
+        this.timerId = setInterval(
+            () => this.tick(),
+            1000
+        );
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerId);
     }
 
     createInitialCells() {
@@ -36,29 +48,29 @@ class Game extends React.Component {
     }
 
     startRunning() {
-        setInterval(() => {
-            this.stepToNextGeneration();
-        }, 1000);
+        this.setState({cells: this.state.cells, generation: 0, running: true});
     }
 
-    stepToNextGeneration() {
-        let cells = Array(this.boardSize);
+    tick() {
+        if (this.state.running) {
+            let cells = Array(this.boardSize);
 
-        for (let i = 0; i < this.boardSize; i++) {
-            cells[i] = Array(this.boardSize);
-            for (let j=0; j < this.boardSize; j++) {
-                cells[i][j] = {
-                    row: i,
-                    col: j,
-                    value: this.getNextValue(i, j)
-                };
+            for (let i = 0; i < this.boardSize; i++) {
+                cells[i] = Array(this.boardSize);
+                for (let j=0; j < this.boardSize; j++) {
+                    cells[i][j] = {
+                        row: i,
+                        col: j,
+                        value: this.getNextValue(i, j)
+                    };
+                }
             }
-        }
 
-        this.setState({
-            cells: cells,
-            generation: this.state.generation + 1
-        });
+            this.setState({
+                cells: cells,
+                generation: this.state.generation + 1
+            });
+        }
     }
 
     getNextValue(i, j) {
