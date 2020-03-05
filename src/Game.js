@@ -4,7 +4,7 @@ import Board from './Board';
 class Game extends React.Component {
     constructor (props) {
         super(props);
-        this.boardSize = 100;
+        this.boardSize = 50;
         this.state = {
             cells: this.createInitialCells(),
             generation: 0,
@@ -47,8 +47,8 @@ class Game extends React.Component {
         this.setState({cells: cells});
     }
 
-    startRunning() {
-        this.setState({cells: this.state.cells, generation: 0, running: true});
+    toggleRunning() {
+        this.setState({running: !this.state.running});
     }
 
     tick() {
@@ -115,6 +115,16 @@ class Game extends React.Component {
         return row[j].value;
     }
 
+    getButtonText() {
+        let buttonText = "Start";
+
+        if (this.state.running) {
+            buttonText = "Stop";
+        }
+
+        return buttonText;
+    }
+
     render() {
         return (
             <div className="game">
@@ -125,8 +135,8 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className="game-info">
-                    <button onClick={() => this.startRunning()}>Start</button>
-                    <p>{this.state.generation}</p>
+                    <button onClick={() => this.toggleRunning()}>{this.getButtonText()}</button>
+                    <p>Generation: {this.state.generation}</p>
                 </div>
             </div>
         );
